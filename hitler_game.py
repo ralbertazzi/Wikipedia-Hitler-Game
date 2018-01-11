@@ -3,11 +3,11 @@ import urllib2
 import sys
 import argparse
 
-parser = argparse.ArgumentParser()
+parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+parser.add_argument('start_title')
+parser.add_argument('--target_title', default='Adolf_Hitler')
+args = parser.parse_args()
 
-
-start_title = 'Italy'
-target_title = 'Adolf_Hitler'
 
 wikipedia_base = 'https://en.wikipedia.org'
 already_visited = set()
@@ -34,7 +34,7 @@ def print_solution(wiki_node):
     recursive_go_to_parent(wiki_node)
 
     all_titles = all_titles[::-1]  # Reverse list
-    all_titles.append(target_title)
+    all_titles.append(args.target_title)
 
     for idx, title in enumerate(all_titles, start=1):
         print idx, title
@@ -43,7 +43,7 @@ def print_solution(wiki_node):
 
 
 
-wiki_node = build_node(start_title, None)
+wiki_node = build_node(args.start_title, None)
 
 while True:
     
@@ -58,7 +58,7 @@ while True:
     # Hack for removing duplicates
     wiki_hrefs = list(set(wiki_hrefs))
 
-    if target_title in wiki_hrefs:
+    if args.target_title in wiki_hrefs:
         print_solution(wiki_node)
         sys.exit()
     else:
