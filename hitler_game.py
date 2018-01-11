@@ -20,7 +20,8 @@ to_be_visited = []
 
 
 def build_node(title, parent):
-    return {'title': title, 'parent': parent}
+    return {'title': title, 'parent': parent, 
+            'depth': parent['depth'] + 1 if parent is not None else 0}
 
 
 def print_solution(wiki_node):
@@ -42,7 +43,7 @@ def print_solution(wiki_node):
     all_titles = all_titles[::-1]  # Reverse list
     all_titles.append(args.target_title)
 
-    for idx, title in enumerate(all_titles, start=1):
+    for idx, title in enumerate(all_titles):
         print idx, title
     
     print
@@ -57,7 +58,7 @@ wiki_node = build_node(args.start_title, None)
 while True:
     
     url = wikipedia_base + '/wiki/' + wiki_node['title']
-    print 'Visiting', url
+    print '({}) Visiting {}'.format(wiki_node['depth'], url)
 
     html_page = urllib2.urlopen(url)
     soup = BeautifulSoup(html_page)
