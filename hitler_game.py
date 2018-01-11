@@ -3,9 +3,10 @@ import urllib2
 import sys
 import argparse
 
+
 parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-parser.add_argument('start_title')
-parser.add_argument('--target_title', default='Adolf_Hitler')
+parser.add_argument('start_title', help='The url of the start wiki page after https://en.wikipedia.org/wiki/')
+parser.add_argument('--target_title', default='Adolf_Hitler', help='The url of the target wiki page after https://en.wikipedia.org/wiki/')
 args = parser.parse_args()
 
 
@@ -16,6 +17,7 @@ if args.start_title == args.target_title:
 wikipedia_base = 'https://en.wikipedia.org'
 already_visited = set()
 to_be_visited = []
+
 
 def build_node(title, parent):
     return {'title': title, 'parent': parent}
@@ -47,19 +49,28 @@ def print_solution(wiki_node):
 
 
 
+
+######################   Let's compute   ###########################################
+
 wiki_node = build_node(args.start_title, None)
 
 while True:
     
     url = wikipedia_base + '/wiki/' + wiki_node['title']
-    print 'Visiting', url 
+    print 'Visiting', url
+
     html_page = urllib2.urlopen(url)
     soup = BeautifulSoup(html_page)
-    all_hrefs = [link.get('href') for link in soup.findAll('a')]
-    # A valid link starts with /wiki/ and does not contain the characters :, otherwise it's gonna be some special Wikipedia page
-    wiki_hrefs = [href[6:] for href in all_hrefs if href is not None and href.startswith('/wiki/') and ':' not in href]
 
-    # Hack for removing duplicates
+    # Get all the hrefs in the page
+    all_hrefs = [link.get('href') for link in soup.findAll('a')]
+
+    # A valid link starts with /wiki/ and does not contain the characters :, otherwise it's gonna be some special Wikipedia page
+    # href[6:] removes the '/wiki/' part
+    wiki_hrefs = [href[6:] for href in all_hrefs if href is not None 
+                                 and href.startswith('/wiki/') and ':' not in href]
+
+    # Hack for removing duplicates (unnecessary)
     wiki_hrefs = list(set(wiki_hrefs))
 
     if args.target_title in wiki_hrefs:
@@ -72,8 +83,10 @@ while True:
         # Bread-first: append children and remove first (FIFO)
         to_be_visited += [child for child in children if child['title'] not in already_visited]
         
-
-        # the pop will fail when the list will be empty, which means when you we'll have visited all the existing Wikipedia links (that takes a looong time), and you didn't find the target title (which means the target title was probably wrong. Sorry!)
+        # the pop will fail when the list will be empty, 
+        # which means when you we'll have visited all the existing 
+        # Wikipedia links (that takes a looong time), and you didn't find the target title 
+        # (which means the target title was probably wrong. Sorry!)
         wiki_node = to_be_visited.pop(0)
 
 
