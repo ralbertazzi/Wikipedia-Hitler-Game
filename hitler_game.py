@@ -6,12 +6,12 @@ import argparse
 parser = argparse.ArgumentParser()
 
 
-start_title = 'Gestapo'
+start_title = 'Italy'
 target_title = 'Adolf_Hitler'
 
 wikipedia_base = 'https://en.wikipedia.org'
 already_visited = set()
-to_be_visited = set()
+to_be_visited = []
 
 def build_node(title, parent):
     return {'title': title, 'parent': parent}
@@ -43,10 +43,9 @@ def print_solution(wiki_node):
 
 
 
-def visit(wiki_node):
+wiki_node = build_node(start_title, None)
 
-    if wiki_node['title'] in already_visited:
-        return
+while True:
     
     url = wikipedia_base + '/wiki/' + wiki_node['title']
     print 'Visiting', url 
@@ -65,9 +64,12 @@ def visit(wiki_node):
     else:
         already_visited.add(wiki_node['title'])
         children = [build_node(wiki_href, parent=wiki_node) for wiki_href in wiki_hrefs]
-        for child in children:
-            visit(child)
+        
+        # Bread-first: append children and remove first (FIFO)
+        to_be_visited += [child for child in children if child['title'] not in already_visited]
+        
+
+        # the pop will fail when the list will be empty, which means when you we'll have visited all the existing Wikipedia links (that takes a looong time), and you didn't find the target title (which means the target title was probably wrong. Sorry!)
+        wiki_node = to_be_visited.pop(0)
 
 
-root = build_node(start_title, None)
-visit(root)
