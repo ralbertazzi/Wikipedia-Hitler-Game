@@ -9,6 +9,10 @@ parser.add_argument('--target_title', default='Adolf_Hitler')
 args = parser.parse_args()
 
 
+if args.start_title == args.target_title:
+    print 'Too easy!'
+    sys.exit()
+
 wikipedia_base = 'https://en.wikipedia.org'
 already_visited = set()
 to_be_visited = []
