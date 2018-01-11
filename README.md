@@ -16,3 +16,11 @@ For a more politically correct game, you can change the target final link
 
 ### Example of the program running:
 ![Screenshot](doc/example.png?raw=true)
+
+### Future improvements:
+* Parallel downloading of web pages
+* Heuristic in order to look first to the link that might lead to the target one
+    - Ideas: train a neural network on the target web page in order to recognize the most correlated words
+
+
+Wrote this for fun in 2 hours
