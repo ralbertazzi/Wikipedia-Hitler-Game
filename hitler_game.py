@@ -70,8 +70,8 @@ def get_links(wiki_node):
     # A valid link starts with /wiki/ and does not contain the characters :, otherwise it's gonna be some special Wikipedia page
     # href[6:] removes the '/wiki/' part
     wiki_hrefs = [href[6:] for href in all_hrefs if href is not None
-                             and href.startswith('/wiki/') and ':' not in href]
-
+                             and href.startswith('/wiki/') and ':' not in href
+                             and not href.endswith('Main_Page')]
     # Hack for removing duplicates (unnecessary)
     wiki_hrefs = list(set(wiki_hrefs))
     return wiki_node, wiki_hrefs
